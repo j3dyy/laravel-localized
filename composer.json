@@ -1,0 +1,25 @@
+{
+    "name": "j3dyy/laravel-localized",
+    "description": "Laravel localization all levels",
+    "autoload": {
+        "psr-4": {
+            "Jedy\\LaravelLocalized\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "jedy",
+            "email": "mr.nizharadze@gmail.com"
+        }
+    ],
+    "require": {
+        "nette/php-generator": "v3.6.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "J3dyy\\LaravelLocalized\\Provider\\LocalizedServiceProvider"
+            ]
+        }
+    }
+}
