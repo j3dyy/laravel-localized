@@ -14,7 +14,7 @@ class MakeModelCommand extends Command
 {
     protected $translationEndpoint = null;
 
-    protected $signature = 'make:localized_model {model}';
+    protected $signature = 'make:localized_model {model} {--model=} {--migration=}';
 
     protected $description = 'make Entity and Translated models';
 
@@ -28,12 +28,16 @@ class MakeModelCommand extends Command
     {
         $model = $this->argument('model');
 
+        $path = $this->option('model');
+        $migrationPath = $this->option('migration');
+
         //generate model
         $this->info('Generating STUB Mode');
-        Stub::load(new ModelGenerator($model),app_path('Models/'));
+
+        Stub::load(new ModelGenerator($model),$path == null ? app_path('Models/') : base_path($path));
 
         //generate migration
-        Stub::load(new MigrationGenerator($model),database_path('migrations/'));
+        Stub::load(new MigrationGenerator($model),$migrationPath == null ? database_path('migrations/') : base_path($migrationPath));
         $this->info('Well Done');
 
     }

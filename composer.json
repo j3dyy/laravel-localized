@@ -3,7 +3,7 @@
     "description": "Laravel localization all levels",
     "autoload": {
         "psr-4": {
-            "Jedy\\LaravelLocalized\\": "src/"
+            "J3dyy\\LaravelLocalized\\": "src/"
         }
     },
     "authors": [
