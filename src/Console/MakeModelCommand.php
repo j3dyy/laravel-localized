@@ -3,6 +3,7 @@
 namespace J3dyy\LaravelLocalized\Console;
 
 use Illuminate\Console\Command;
+use J3dyy\LaravelLocalized\Reflection\StubGenerator\Generators\Generator;
 use J3dyy\LaravelLocalized\Reflection\StubGenerator\Generators\MigrationGenerator;
 use J3dyy\LaravelLocalized\Reflection\StubGenerator\Generators\ModelGenerator;
 use J3dyy\LaravelLocalized\Reflection\StubGenerator\Stub;
@@ -31,15 +32,17 @@ class MakeModelCommand extends Command
         $path = $this->option('model');
         $migrationPath = $this->option('migration');
 
-        //generate model
         $this->info('Generating STUB Mode');
-
-        Stub::load(new ModelGenerator($model),$path == null ? app_path('Models/') : base_path($path));
+        //generate model
+        $this->handleLoad(new ModelGenerator($model),$path == null ? app_path('Models/') : base_path($path));
 
         //generate migration
-        Stub::load(new MigrationGenerator($model),$migrationPath == null ? database_path('migrations/') : base_path($migrationPath));
+        $this->handleLoad(new MigrationGenerator($model),$migrationPath == null ? database_path('migrations/') : base_path($migrationPath));
         $this->info('Well Done');
+    }
 
+    private function handleLoad(Generator $generator, string $migrationPath){
+        Stub::load($generator,$migrationPath);
     }
 
 }

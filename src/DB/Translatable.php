@@ -27,5 +27,10 @@ class Translatable extends LocalizedModel
         return $this->belongsTo($this->related, $this->foreignKey , $this->ownerKey);
     }
 
+    public function getForeignKey()
+    {
+        return $this->foreignKey;
+    }
+
 
 }
