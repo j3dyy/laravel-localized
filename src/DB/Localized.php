@@ -70,6 +70,10 @@ class Localized extends LocalizedModel
         return $this->translations()->where('locale','=',$locale);
     }
 
+    public function translate(string $locale)
+    {
+        return $this->translated($locale)->first();
+    }
 
 
     protected static function booted(){
