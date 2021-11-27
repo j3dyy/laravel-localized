@@ -73,7 +73,7 @@ class MigrationGenerator extends Generator
                $table->id();
                $table->timestamps();
                $table->string(\'locale\')->index();
-               $table->integer(\''.$this->tableName.'_id\')->index();
+               $table->bigInteger(\''.$this->tableName.'_id\')->unsigned();
                $table->foreign("'.$this->foreignField.'")->references(\'id\')
                ->onDelete(\'cascade\')
                ->on("'.$this->tableName.'");
