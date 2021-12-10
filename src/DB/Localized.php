@@ -1,6 +1,7 @@
 <?php
 namespace J3dyy\LaravelLocalized\DB;
 
+use App\Models\Locales;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,6 +19,10 @@ class Localized extends LocalizedModel
 
     protected $translation = null;
 
+    private $permanentTranslations;
+
+    protected $creationTranslations;
+
     protected $with = [
         'translated'
     ];
@@ -25,16 +30,31 @@ class Localized extends LocalizedModel
 
     public function __construct(array $attributes = [])
     {
+        $this->permanentTranslations = collect();
+
         parent::__construct($attributes);
 
         $this->translationEndpoint = config('localized.translated_endpoint');
 
         $this->resolve();
+
+        $locales = Locales::where('is_active','=',true)->get();
+
+        if (count($attributes) > 0){
+
+            foreach ($locales as $locale){
+
+                if (isset($attributes[$locale->iso_code])){
+                    $this->permanentTranslations->put($locale->iso_code, $attributes[$locale->iso_code]);
+                }
+            }
+        }
     }
 
 
     public function __get($key)
     {
+
         //first laravel magic
         $parent = parent::__get($key);
 
@@ -42,10 +62,15 @@ class Localized extends LocalizedModel
         if ($parent == null)
         {
             $this->translation ?? $this->translation = $this->translated()->first();
+
+            if ($this->translation == null)
+                return null;
+
             return $this->translation->{$key};
         }
         return $parent;
     }
+
 
 
 
@@ -77,7 +102,7 @@ class Localized extends LocalizedModel
 
 
     protected static function booted(){
-        static::saved(function (Model $entity){
+        static::saved(function (Localized $entity){
             $entity->syncTranslations();
         });
     }
@@ -87,7 +112,7 @@ class Localized extends LocalizedModel
     protected function syncTranslations(){
         $needsUpdate = [];
 
-        foreach ($this->translations as $locale => $value ){
+        foreach ($this->permanentTranslations as $locale => $value ){
             $record = $this->translations()->where('locale','=', $locale)->first();
 
             $value['locale'] = $locale;
@@ -96,7 +121,8 @@ class Localized extends LocalizedModel
                 $value['id'] = $record->id;
             }
 
-            if (!isset($value['posts_id'])) $value['posts_id'] = $this->id;
+            //ensure check if table name resolved
+            if (!isset($value[$this->table.'_id'])) $value[$this->table.'_id'] = $this->id;
 
             if (is_array($value)) $needsUpdate[] = $value;
         }

@@ -17,4 +17,5 @@ trait ResolveLocalized
         $name = explode('\\', strtolower(get_class($this)));
         return $name[count($name) - 1];
     }
+
 }
