@@ -37,24 +37,11 @@ class Localized extends LocalizedModel
         $this->translationEndpoint = config('localized.translated_endpoint');
 
         $this->resolve();
-
-        $locales = Locales::where('is_active','=',true)->get();
-
-        if (count($attributes) > 0){
-
-            foreach ($locales as $locale){
-
-                if (isset($attributes[$locale->iso_code])){
-                    $this->permanentTranslations->put($locale->iso_code, $attributes[$locale->iso_code]);
-                }
-            }
-        }
     }
 
 
     public function __get($key)
     {
-
         //first laravel magic
         $parent = parent::__get($key);
 
@@ -71,8 +58,16 @@ class Localized extends LocalizedModel
         return $parent;
     }
 
-
-
+    /**
+     * @param array $attributes
+     * @return Localized
+     * @description bin translatable field if it exists field like : locale[key]
+     */
+    public function fill(array $attributes)
+    {
+        $this->bindTranslations($attributes);
+        return parent::fill($attributes);
+    }
 
     /**
      * @throws LocalizedImplementationException
@@ -105,6 +100,9 @@ class Localized extends LocalizedModel
         static::saved(function (Localized $entity){
             $entity->syncTranslations();
         });
+        static::updated(function (Localized $entity){
+            $entity->syncTranslations();
+        });
     }
 
 
@@ -133,6 +131,20 @@ class Localized extends LocalizedModel
 
     private function upsertData(array $data ,$keys, $uniqueBy = 'id'){
         $this->translations()->upsert($data,$uniqueBy,$keys);
+    }
+
+    private function bindTranslations(array $attributes = []){
+        $locales = Locales::where('is_active','=',true)->get();
+
+        if (count($attributes) > 0){
+
+            foreach ($locales as $locale){
+
+                if (isset($attributes[$locale->iso_code])){
+                    $this->permanentTranslations->put($locale->iso_code, $attributes[$locale->iso_code]);
+                }
+            }
+        }
     }
 
 }
