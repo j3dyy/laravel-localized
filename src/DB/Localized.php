@@ -1,7 +1,6 @@
 <?php
 namespace J3dyy\LaravelLocalized\DB;
 
-use App\Models\Locales;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;

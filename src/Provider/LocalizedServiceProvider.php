@@ -12,6 +12,10 @@ class LocalizedServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../../config/localized.php' => config_path('localized.php')
+        ],'laravel-localized');
+
+        $this->loadMigrationsFrom([
+            __DIR__.'/../DB/migrations/2022_01_10_111000_create_locales_table.php'
         ]);
 
         if ($this->app->runningInConsole()){

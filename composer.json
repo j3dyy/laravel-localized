@@ -6,6 +6,7 @@
             "J3dyy\\LaravelLocalized\\": "src/"
         }
     },
+    "license": "MIT",
     "authors": [
         {
             "name": "jedy",
@@ -21,5 +22,7 @@
                 "J3dyy\\LaravelLocalized\\Provider\\LocalizedServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
